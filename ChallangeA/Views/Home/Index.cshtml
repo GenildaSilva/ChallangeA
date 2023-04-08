@@ -1,0 +1,29 @@
+﻿ @model ChallangeA.Models.ProductList
+
+<h2>Items</h2>
+
+<ul id="item-list">
+    @foreach (var item in Model)
+    {
+        <li>@item.Name : @item.Description</li>
+    }
+</ul>
+
+<button style="background-color: coral; border-radius: initial" onclick="listItems()">List Items</button>
+
+<script>
+    // not ideal - $('<li />') can cause severe performance issues if the list is big
+    const itemTemplate = item => $('<li />').html(`${item.Name} : ${item.Description}`)
+    function listItems() {
+        $.ajax({
+            url: '@Url.Action("AddItems", "Home")',
+            type: 'GET',
+            dataType: 'html',
+            success: function (result) {
+                const data = JSON.parse(result);
+                if (data && data.length > 0)
+                    $('#item-list').html(data.map(itemTemplate))
+            }
+        });
+    }
+</script>
